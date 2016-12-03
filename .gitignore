@@ -1,3 +1,7 @@
+# Executables
+webserv
+webcli
+
 # Object files
 *.o
 *.ko
