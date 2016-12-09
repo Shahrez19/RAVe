@@ -1,6 +1,8 @@
 all:
 	gcc -o webserv webserv.c
-	gcc -o webcli webcli.c
+
+debug:
+	gcc -g -o webserv webserv.c
 
 clean:
-	rm -f webserv webcli
+	rm -f webserv
