@@ -8,6 +8,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <dirent.h>
+
+#define BLKDEV 0     // block device
+#define CHRDEV 1     // character device
+#define DREG   2     // directory
+#define FIFO   3     // FIFO
+#define SLINK  4     // symlink
+#define FREG   5     // regular file
+#define FSOCK  6     // socket file
 
 char * get_suffix(char * filename) {
     int i;
@@ -18,6 +29,60 @@ char * get_suffix(char * filename) {
     }
     return "";
 }
+
+int checkcwd (char * fname) {
+    DIR *dir;
+    struct dirent *dp;
+    struct stat st;
+
+    if((dir = opendir(".")) == NULL) {
+        perror("\nUnable to open directory.");
+        exit(1);
+    }
+
+    while ((dp = readdir(dir)) != NULL) {
+        if(strcmp(dp->d_name, fname) == 0) {    // match
+            if (stat(fname, &st) == -1) {
+                perror("stat");
+                exit(1);
+            }
+
+            switch (st.st_mode & S_IFMT) {
+                case S_IFBLK:   closedir(dir);   return (BLKDEV);   break;
+                case S_IFCHR:   closedir(dir);   return (CHRDEV);   break;
+                case S_IFDIR:   closedir(dir);   return (DREG);     break;
+                case S_IFIFO:   closedir(dir);   return (FIFO);     break;
+                case S_IFLNK:   closedir(dir);   return (SLINK);    break;
+                case S_IFREG:   closedir(dir);   return (FREG);     break;
+                case S_IFSOCK:  closedir(dir);   return (FSOCK);    break;
+                default:        closedir(dir);   return (-1);     break;
+            }
+        }
+    }
+}
+
+void rlsdir (const char* fname, int sockfd) {
+    DIR *dir;
+    struct dirent *dp;
+
+    char * dirname = (char *) malloc(sizeof(fname) + (2*sizeof(char)));
+    strcpy(dirname, "./");
+    strcat(dirname, fname);
+
+    if((dir = opendir(dirname)) == NULL) {
+        perror("\nUnable to open directory.");
+        exit(1);
+    }
+
+    while ((dp = readdir(dir)) != NULL) {
+        if ((strcmp(dp->d_name,".") != 0) && (strcmp(dp->d_name,"..") != 0)) {
+            // write (sockfd, , )); // NEED TO WRITE TO SOCKET
+            printf("%s\n", dp->d_name);
+        }
+    }
+    closedir(dir);
+}
+
 
 int main (int argc, char *argv[]) {
     if (argc != 2) {
@@ -69,17 +134,30 @@ int main (int argc, char *argv[]) {
         if (fork () == 0) {	                // child process
             close (sd);
             read (new_sd, &data, 100);       // read our request
-            char * q = strtok(data, " ");   // start to tokenize
+            char * r = strtok(data, " ");    // start to tokenize
             int i;
             for (i = 0; i!=1; i++) {    // get second token (request)
-                q = strtok(NULL, " ");
+                r = strtok(NULL, " ");
             }
 
-            // parse and execute request
-            if (strcmp(get_suffix(q), "cgi") == 0) {
-                char * req = (char *) malloc(sizeof(q) + sizeof(char));
-                strcpy(req, ".");
-                strcat(req, q);
+            // parse and execute request r
+            if (r[0] == '/') {
+                r++;
+            }
+
+            // stat file
+            struct stat sb;
+            if (stat(r, &sb) == -1) {   // 404
+                perror("stat");
+                exit(1);
+            }
+
+            // prefixed
+            char * req = (char *) malloc(sizeof(r) + (2*sizeof(char)));
+            strcpy(req, "./");
+            strcat(req, r);
+
+            if (strcmp(get_suffix(r), "cgi") == 0) {    // cgi script
                 char *args[] = {req, NULL};
                 if (execvp(req, args) == -1) {
     				fprintf(stderr, "execution error %s: %s\n", strerror(errno), req);
@@ -87,7 +165,17 @@ int main (int argc, char *argv[]) {
     				exit(-1);
     			}
             }
+            else if (strcmp(get_suffix(r), "gif") == 0 ||     // image file (gif or jpeg)
+                     strcmp(get_suffix(r), "jpg") == 0 ||
+                     strcmp(get_suffix(r), "jpeg") == 0) {
 
+            }
+            else if (checkcwd(r) == DREG) {    // directory to list
+                rlsdir(req, new_sd);
+            }
+            else {
+                printf("UNCAUGHT");
+            }
 
             close(new_sd);
             exit (0);
