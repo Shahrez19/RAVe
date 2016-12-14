@@ -16,48 +16,49 @@ my $home_directory = $ARGV[0];
 
 # Counts the frequency of each filetype in the directory recursively
 sub count_files {
-	#my $filename = $File::Find::name;
+	my $filename = $File::Find::name;
 
-	if (-f $_) {
-		$count_regular++;
-	#	print $_ . "\t" . $filename . "\tregular\n";
-	} elsif (-d $_) {
-		$count_directory++;
-	#	print $_ . "\tdirectory\n";
-	} elsif (-p $_) {
+	if (-p $_) {
 		$count_fifo++;
-	#	print $_ . "\tFIFO\n";
+		#print $filename . "\tFIFO\n";
 	} elsif (-S $_) {
 		$count_socket++;
-	#	print $_ . "\tsocket\n";
+		#print $filename . "\tsocket\n";
 	} elsif (-l $_) {
 		$count_link++;
-	#	print $_ . "\tsymlink\n";
+		#print $filename . "\tsymlink\n";
 	} elsif (-b $_) {
 		$count_block++;
-	#	print $_ . "\tblock\n";
+		#print $filename . "\tblock\n";
 	} elsif (-c $_) {
 		$count_character++;
-	#	print $_ . "\tcharacter\n"; 
+		#print $filename . "\tcharacter\n";
+	} elsif (-f $_) {
+		$count_regular++;
+		#print $filename . "\tregular\n";
+	} elsif (-d $_) {
+		$count_directory++;
+		#print $filename . "\tdirectory\n";
 	} else {
-		print $_ . "\tunknown type\n";
+		print $filename . "\tunknown type\n";
 	}
 }
 find(\&count_files, $home_directory);
 
 
 # Just some print statements to help me with debugging
-print "regular\t$count_regular\n";
-print "directory\t$count_directory\n";
-print "FIFO\t$count_fifo\n";
-print "socket\t$count_socket\n";
-print "symbolic link\t$count_link\n";
-print "block\t$count_block\n";
-print "character\t$count_character\n";
+#print "\n";
+#print "regular\t$count_regular\n";
+#print "directory\t$count_directory\n";
+#print "FIFO\t$count_fifo\n";
+#print "socket\t$count_socket\n";
+#print "symbolic link\t$count_link\n";
+#print "block\t$count_block\n";
+#print "character\t$count_character\n";
 
 # Write all of the data to a file
 
-my $filename = "filetypes.dat";
+#my $filename = "filetypes.dat";
 
 open(my $fh, '>', "filetypes.dat") or die "Error writing data to file.";
 
@@ -92,14 +93,16 @@ close GNUPLOT;
 
 # Pretty print the output back to the client
 
+print "HTTP/1.0 200 OK\n";
 print "Content-type: text/html\n\n";
 print "<html>";
 print "<body>";
-print "<center>";
-print "<h1 style='color:red' size='16'>CS410 Webserver</h1>";
+print "<div style='text-align:center'>";
+print "<br>";
+print "<p style='color:red; font-size:16pt'>CS410 Webserver</p>";
 print "<br>";
 print "<img src='histogram.jpeg'>";
-print "</center>";
+print "</div>";
 print "</body>";
 print "</html>";
 
