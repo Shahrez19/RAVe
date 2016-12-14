@@ -2,26 +2,57 @@
 
 use strict;
 use warnings;
-use File::Find wq(finddepth);
-my @files;
-finddepth( sub {
-	return if ( $_ eq '.' || $_ eq '..');
-	push @files, $File::Find::name;
-	}, $home_directory);
+use File::Find;
 
-$home_directory = $ARGV[0];
+my $count_regular = 0;
+my $count_directory = 0;
+my $count_fifo = 0;
+my $count_socket = 0;
+my $count_link = 0;
+my $count_block = 0;
+my $count_character = 0;
 
-#open (GNUPLOT, "|/usr/bin/gnuplot") or die "Error opening GNUPLOT";
+my $home_directory = $ARGV[0];
 
-opendir(D, $home_directory) or die "Error opening directory\n";
+sub process_file {
+	#my $filename = $File::Find::name;
 
-while (my $file = readdir(D)) {
-	print "\$f = $file\n";
+	if (-f $_) {
+		$count_regular++;
+		#print $_ . "\tregular\n";
+	} elsif (-d $_) {
+		$count_directory++;
+		#print $_ . "\tdirectory\n";
+	} elsif (-p $_) {
+		$count_fifo++;
+		#print $_ . "\tFIFO\n";
+	} elsif (-S $_) {
+		$count_socket++;
+		#print $_ . "\tsocket\n";
+	} elsif (-l $_) {
+		$count_link++;
+		#print $_ . "\tsymlink\n";
+	} elsif (-b $_) {
+		$count_block++;
+		#print $_ . "\tblock\n";
+	} elsif (-c $_) {
+		$count_character++;
+		#print $_ . "\tcharacter\n"; 
+	} else {
+		print $_ . "\tunknown type\n";
+	}
 }
+find(\&process_file, $home_directory);
 
-closedir(D);
+print "regular\t$count_regular\n";
+print "directory\t$count_directory\n";
+print "FIFO\t$count_fifo\n";
+print "socket\t$count_socket\n";
+print "symbolic link\t$count_link\n";
+print "block\t$count_block\n";
+print "character\t$count_character\n";
 
-print "No errors so far";
+open (GNUPLOT, "|gnuplot") or die "Error opening GNUPLOT";
 
 #reset
 #set autoscale
