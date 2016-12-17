@@ -4,15 +4,17 @@ AF_DCMotor motor2(1);
 
 //Control Flags
 int flag = 0;
-
+int command = 55;
 // Turn off all motors
 void reset(){
-motor1.release();
-motor2.release();
+Serial.println("RESET!!!");
+motor1.run(RELEASE);
+motor2.run(RELEASE);
 }
 
 void forward(){
 motor1.run(FORWARD);
+Serial.println("GOING FORWARD In ARDUINO");
 delay(3000);
 motor1.run(RELEASE);
 delay(200); //Coast for 1/10 second to prevent power pushback
@@ -25,7 +27,7 @@ void CommandCenter(int command){
 	    case 0: reset(); break;
 
 	    //Simple Commands
-	    case 1: forward(); break
+	    case 1: forward(); break;
 
 	    default: Serial.print("\nINVALID ORDER!... TURNING OFF!\n");
 	}
@@ -48,7 +50,7 @@ void loop(){
   	command = Serial.read() - 65;
   	Serial.print("I received: ");
   	Serial.println(command);
-  	flag = 1
+  	flag = 1;
   }
 
   if(flag){

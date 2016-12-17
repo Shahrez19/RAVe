@@ -8,25 +8,30 @@ def clear_screen():
 
 def getCommand(run):
     for event in pygame.event.get():
+        print "Anything";
         if (event.type == KEYDOWN):
             keyinput = pygame.key.get_pressed();
 
             if keyinput[pygame.K_UP]:
                 print "up button pressed"
-                run[1] = 1
+                run[1] = 1;
 
             elif keyinput[pygame.K_x] or keyinput[pygame.K_q]:
                 print "Invalid button pressed"
                 print 'exit'
-                run[1] = 0
+                run[1] = 0;
 
         elif event.type == pygame.KEYUP:
             if (run[1] < 20):
                 run[1] = 0;
+ #   run = [False,1]
     return run;
     
 def main():
-    print '\n Going Forward \n';
+
+    clear_screen()
+    
+    print '\n STARTING MAIN \n';
 
     ## ACM0 ends with a zero
     ## Always change this to the corresponding arduino PORT
@@ -38,13 +43,14 @@ def main():
 
     while run[0]:
         run = getCommand(run);
+        print run
 
         # debug
         #print commands
 
         if(run[1] != previous):
             previous = run[1];
-            ser.write(chr(run[1]) + 65);
+            ser.write(chr(run[1] + 65));
             print run[1];
     
     ser.close();
