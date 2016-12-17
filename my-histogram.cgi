@@ -72,6 +72,7 @@ close GNUPLOT;
 # Pretty print the output back to the client
 print "HTTP/1.0 200 OK\n";
 print "Content-type: text/html\n\n";
+print "<!DOCTYPE html>";
 print "<html>";
 print "<body>";
 print "<div style='text-align:center'>";
