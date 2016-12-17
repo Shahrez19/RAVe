@@ -8,36 +8,28 @@ def clear_screen():
 
 def getCommand(run):
     for event in pygame.event.get():
-        if(event.type == KEYDOWN):
+        if (event.type == KEYDOWN):
             keyinput = pygame.key.get_pressed();
 
-            #Simple commands :: one key Pressed
-
             if keyinput[pygame.K_UP]:
-                run[1] = 11;
-            elif keyinput[pygame.K_DOWN]:
-                run[1] = 12;
-            elif keyinput[pygame.K_RIGHT]:
-                run[1] = 13;
-            elif keyinput[pygame.K_LEFT]:
-                run[1] = 14;
+                print "up button pressed"
+                run[1] = 1
 
             elif keyinput[pygame.K_x] or keyinput[pygame.K_q]:
+                print "Invalid button pressed"
                 print 'exit'
-                run[0] = 'False';
-                run[1] = 0;
+                run[1] = 0
 
         elif event.type == pygame.KEYUP:
-            if(run[1] < 20):
+            if (run[1] < 20):
                 run[1] = 0;
-        return run;
+    return run;
     
 def main():
-    clear_screen()
-
-    print '\n Starting ControlCar \n';
+    print '\n Going Forward \n';
 
     ## ACM0 ends with a zero
+    ## Always change this to the corresponding arduino PORT
     ser = serial.Serial('/dev/ttyACM0', 115200,timeout=1)
 
     pygame.init();
