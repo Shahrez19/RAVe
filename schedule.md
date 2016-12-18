@@ -22,7 +22,7 @@
 
 
 ### my-histogram, Gnuplot, and html "pretty print"
-- [ ] implement basic program `my-histogram dir` that searches all directories from `dir` and records the number of files of the types:
+- [x] implement basic program `my-histogram dir` that searches all directories from `dir` and records the number of files of the types:
     * regular
     * directory
     * fifo
@@ -30,12 +30,12 @@
     * symlink
     * block files
     * character files
-- [ ] implement graph creating functionality by piping the collected data into gnuplot and:
+- [x] implement graph creating functionality by piping the collected data into gnuplot and:
     * show frequency on y-axis
     * show file types on x-axis
     * output the graph to file
     * have cgi script send image file to client
-- [ ] "pretty print" the graph file by
+- [x] "pretty print" the graph file by
     * embedding it in a generated html file
     * page style:
         * 16pt red centerd title: "CS410 Webserver"
@@ -48,4 +48,6 @@
 * server configuration options to turn off cache, threading
 
 ### Physical Computing
-coming soon...
+- [ ] arduino programs to control the motors
+- [ ] bash scripts to execute the arduino programs
+- [ ] electron app
