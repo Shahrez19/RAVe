@@ -1,6 +1,7 @@
 #!/usr/bin/python2
 import smbus
 import time
+import sys
 bus = smbus.SMBus(1)
 
 # This is the address we setup in the Arduino Program
@@ -16,16 +17,11 @@ def readNumber():
     # number = bus.read_byte_data(address, 1)
     return number
 
-while True:
-    var = input("Enter Number:")
-    if not var:
-        continue
 
-    writeNumber(var)
-    print "RPI to arduino: ", var
-    # sleep one second
-    time.sleep(1)
+var = int(sys.argv[1])
 
-    number = readNumber()
-    print "Arduino to rpi:", number
-    print
+writeNumber(var)
+#print "RPI to arduino: ", var
+# sleep one second
+number = readNumber()
+#print "Arduino to rpi:", number
