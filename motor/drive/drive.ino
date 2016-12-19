@@ -15,6 +15,7 @@ int number = -1;
 void setup() {
   // motor setup
   motor1.setSpeed(250);
+  motor2.setSpeed(250);
 
   // serial setup
   pinMode (13, OUTPUT);
