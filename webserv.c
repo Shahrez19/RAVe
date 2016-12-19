@@ -361,12 +361,13 @@ int handle_request(char * request, int sockfd) {
 
         pid_t pid;
         if ((pid = fork ()) > 0) {
-            fprintf(stderr, "200 OK: %s\n", request);
+
         }
         else if (pid == 0) {
             hargs[0] = pr;
+            int devNull = open("/dev/null", O_WRONLY);
             int saved_stdout = dup(STDOUT_FILENO);
-            dup2(sockfd, STDOUT_FILENO);
+            dup2(sockfd, devNull);
             if (execvp(pr, hargs) == -1) {
                 fprintf(stderr, "execution error %s: %s\n", strerror(errno), pr);
                 close(sockfd);
@@ -378,6 +379,19 @@ int handle_request(char * request, int sockfd) {
             perror("");
             exit(1);
         }
+        fprintf(stderr, "200 OK: %s\n", request);
+        char * resp = "<!DOCTYPE html><html><body><div style='text-align:center'><br><p style='color:red; font-size:16pt'>CS410 Webserver</p><br><img src='histogram.jpeg'></div></body></html>";
+        char buf[1024];
+        sprintf(buf, "HTTP/1.0 200 OK\r\n");
+        send(sockfd, buf, strlen(buf), 0);
+        sprintf(buf, "Server: webserv/0.1.0\r\n");
+        send(sockfd, buf, strlen(buf), 0);
+        sprintf(buf, "Content-Type: text/html\r\n");
+        send(sockfd, buf, strlen(buf), 0);
+        sprintf(buf, "Content-Length: 168\r\n\r\n");
+        send(sockfd, buf, strlen(buf), 0);
+        send(sockfd, resp, strlen(resp), 0);
+        memset(buf, 0, 1024);
     }
     else if ((strcmp(get_suffix(request), "gif") == 0) ||     // image file (gif or jpeg)
              (strcmp(get_suffix(request), "jpg") == 0) ||

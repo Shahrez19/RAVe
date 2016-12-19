@@ -70,17 +70,17 @@ close GNUPLOT;
 
 
 # Pretty print the output back to the client
-print "HTTP/1.0 200 OK\n";
-print "Content-type: text/html\n\n";
-print "<!DOCTYPE html>";
-print "<html>";
-print "<body>";
-print "<div style='text-align:center'>";
-print "<br>";
-print "<p style='color:red; font-size:16pt'>CS410 Webserver</p>";
-print "<br>";
-print "<img src='histogram.jpeg'>";
-print "</div>";
-print "</body>";
-print "</html>";
-
+# print "HTTP/1.0 200 OK\n";
+# print "Content-type: text/html\n";
+# print "Content-Length: 168\n\n";
+# print "<!DOCTYPE html>";
+# print "<html>";
+# print "<body>";
+# print "<div style='text-align:center'>";
+# print "<br>";
+# print "<p style='color:red; font-size:16pt'>CS410 Webserver</p>";
+# print "<br>";
+# print "<img src='histogram.jpeg'>";
+# print "</div>";
+# print "</body>";
+# print "</html>";
