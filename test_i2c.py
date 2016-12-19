@@ -23,5 +23,6 @@ var = int(sys.argv[1])
 writeNumber(var)
 #print "RPI to arduino: ", var
 # sleep one second
+time.sleep(1)
 number = readNumber()
 #print "Arduino to rpi:", number
