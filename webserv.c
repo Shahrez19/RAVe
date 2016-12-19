@@ -129,7 +129,7 @@ void rlsdir (const char* fname, int client) {
         exit(1);
     }
 
-    fprintf(stderr, "200 OK: %s\n", fname);
+    fprintf(stderr, "200: %s\n", fname);
 
     char buf[1024];
     char rbuf[1024];
@@ -219,7 +219,7 @@ void send_file(const char * fname, int client, char * extension) {
         fread(pbuf, sizeof(char), sb.st_size + 1, fp);
         fclose(fp);
 
-        fprintf(stderr, "200 OK: %s\n", fname);
+        fprintf(stderr, "200: %s\n", fname);
 
         char buf[1024];
         sprintf(buf, "HTTP/1.0 200\r\n");
@@ -262,7 +262,7 @@ void send_file(const char * fname, int client, char * extension) {
         fread(pbuf, sizeof(char), sb.st_size + 1, fp);
         fclose(fp);
 
-        fprintf(stderr, "200 OK: %s\n", fname);
+        fprintf(stderr, "200: %s\n", fname);
 
         char buf[1024];
         sprintf(buf, "HTTP/1.0 200\r\n");
@@ -306,7 +306,7 @@ void send_img(const char * fname, int client, char * extension) {
         exit(1);
     }
 
-    fprintf(stderr, "200 OK: %s\n", fname);
+    fprintf(stderr, "200: %s\n", fname);
 
     char buf[1024];
     sprintf(buf, "HTTP/1.0 200\r\n");
@@ -379,19 +379,33 @@ int handle_request(char * request, int sockfd) {
             perror("");
             exit(1);
         }
-        fprintf(stderr, "200 OK: %s\n", request);
-        char * resp = "<!DOCTYPE html><html><body><div style='text-align:center'><br><p style='color:red; font-size:16pt'>CS410 Webserver</p><br><img src='histogram.jpeg'></div></body></html>";
-        char buf[1024];
-        sprintf(buf, "HTTP/1.0 200 OK\r\n");
-        send(sockfd, buf, strlen(buf), 0);
-        sprintf(buf, "Server: webserv/0.1.0\r\n");
-        send(sockfd, buf, strlen(buf), 0);
-        sprintf(buf, "Content-Type: text/html\r\n");
-        send(sockfd, buf, strlen(buf), 0);
-        sprintf(buf, "Content-Length: 168\r\n\r\n");
-        send(sockfd, buf, strlen(buf), 0);
-        send(sockfd, resp, strlen(resp), 0);
-        memset(buf, 0, 1024);
+        if (strcmp(request, "my-histogram.cgi") == 0) {
+            char * resp = "<!DOCTYPE html><html><body><div style='text-align:center'><br><p style='color:red; font-size:16pt'>CS410 Webserver</p><br><img src='histogram.jpeg'></div></body></html>";
+            char buf[1024];
+            sprintf(buf, "HTTP/1.0 200 OK\r\n");
+            send(sockfd, buf, strlen(buf), 0);
+            sprintf(buf, "Server: webserv/0.1.0\r\n");
+            send(sockfd, buf, strlen(buf), 0);
+            sprintf(buf, "Content-Type: text/html\r\n");
+            send(sockfd, buf, strlen(buf), 0);
+            sprintf(buf, "Content-Length: 168\r\n\r\n");
+            send(sockfd, buf, strlen(buf), 0);
+            send(sockfd, resp, strlen(resp), 0);
+            memset(buf, 0, 1024);
+        }
+        else {
+            char buf[1024];
+            char rbuf[1024];
+            sprintf(buf, "HTTP/1.0 200 OK\r\n");
+            send(sockfd, buf, strlen(buf), 0);
+            sprintf(buf, "Server: webserv/0.1.0\r\n");
+            send(sockfd, buf, strlen(buf), 0);
+            sprintf(buf, "Content-Type: text/html\r\n");
+            send(sockfd, buf, strlen(buf), 0);
+            sprintf(buf, "Content-Length: 0\r\n\r\n");
+            send(sockfd, buf, strlen(buf), 0);
+        }
+        fprintf(stderr, "200: %s\n", request);
     }
     else if ((strcmp(get_suffix(request), "gif") == 0) ||     // image file (gif or jpeg)
              (strcmp(get_suffix(request), "jpg") == 0) ||
@@ -473,7 +487,7 @@ int main (int argc, char *argv[]) {
             strcpy(r, rs);
 
             if(strcmp(METHOD, "GET") != 0) {
-                fprintf(stderr, "501 NI: %s\n", METHOD);
+                fprintf(stderr, "501: %s\n", METHOD);
                 unimplemented(new_sd);
                 close(new_sd);
                 exit(0);
