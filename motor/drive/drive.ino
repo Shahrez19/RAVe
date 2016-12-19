@@ -55,15 +55,17 @@ void receiveData(int byteCount) {
       case 3:
         motor1.run(FORWARD);
         motor2.run(FORWARD);
-        delay(500000);
+        delay(250000);
         motor1.run(RELEASE);
         motor2.run(RELEASE);
+        break;
       case 4:
         motor1.run(FORWARD);
         motor2.run(BACKWARD);
-        delay(500000);
+        delay(250000);
         motor1.run(RELEASE);
         motor2.run(RELEASE);
+        break;
       default: 
         continue;
       break;
