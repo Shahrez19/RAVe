@@ -28,7 +28,7 @@ void setup() {
   Wire.onReceive(receiveData);
   Wire.onRequest (sendData);
 
-  Serial.println("READY FOR INPUT");
+  //Serial.println("READY FOR INPUT");
 }
 
 void loop() {
@@ -38,11 +38,10 @@ void loop() {
 void receiveData(int byteCount) {
   while (Wire.available()) {
     number = Wire.read();
-    Serial.print("data received: ");
-    Serial.println(number);
+    //Serial.print("data received: ");
+    //Serial.println(number);
       switch (number) {
       case 1:
-        Serial.println("FORWARD!");
         motor1.run(FORWARD);
         delay(250000);
         motor1.run(RELEASE);
@@ -68,7 +67,7 @@ void receiveData(int byteCount) {
         break;
       default: 
         continue;
-      break;
+        break;
     }
   }
 }
