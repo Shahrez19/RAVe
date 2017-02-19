@@ -1,4 +1,5 @@
-## Just for fun Linux vehicle
+## RaspberryPi Arduino Linux VEhicle (RAVe)
+#### a just-for-fun rc vehicle (Chloe Fortuna, Shahrez Jan, Austin Small)
 
 ### HTTP Web Server
 * compile: `make`
