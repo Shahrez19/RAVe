@@ -379,7 +379,7 @@ int handle_request(char * request, int sockfd) {
             perror("");
             exit(1);
         }
-        if (strcmp(request, "my-histogram.cgi") == 0) {
+        if (strcmp(request, "graph.cgi") == 0) {
             char * resp = "<!DOCTYPE html><html><body><div style='text-align:center'><br><p style='color:red; font-size:16pt'>CS410 Webserver</p><br><img src='histogram.jpeg'></div></body></html>";
             char buf[1024];
             sprintf(buf, "HTTP/1.0 200 OK\r\n");
