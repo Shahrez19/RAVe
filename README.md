@@ -1,5 +1,4 @@
-# Linux-Powered Vehicle
-Repository for physical computing project: Boston University CS 410, Fall 2016
+## Just for fun Linux vehicle
 
 ### HTTP Web Server
 * compile: `make`
@@ -7,7 +6,7 @@ Repository for physical computing project: Boston University CS 410, Fall 2016
 * open a browser or http client and send requests in the form: `ip-address-of-server:port/request?arg1?arg2` on the client
 
 ### Vehicle
-* see `CS410-Vehicle.pdf` for project idea/basis
+* see `project.pdf` for project idea/basis
 
 ##### Raspberry Pi:
 * add line `dtparam=i2c_arm=on` to `/boot/config.txt` to enable i2c in the Pi's device tree
